@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="我的个人主页 - 基于Dimension模板">
+    <title>个人主页 | 你的名字</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- 背景层 -->
+    <div class="bg"></div>
+    <div class="bg-overlay"></div>
+    
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 导航栏 -->
+        <nav class="navbar">
+            <div class="nav-left">
+                <span class="logo">D<span>imension</span></span>
+            </div>
+            <div class="nav-right">
+                <button id="theme-toggle" class="nav-btn" title="切换主题">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <a href="https://github.com/duxiaoyang-creator" class="nav-btn" target="_blank">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="#contact" class="nav-btn">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <button class="download-btn" onclick="downloadResume()">
+                    <i class="fas fa-download"></i> Download CV
+                </button>
+            </div>
+        </nav>
+
+        <!-- 响应式预览设备选择器（模拟图片中的功能） -->
+        <div class="device-preview">
+            <button class="device-btn active" data-device="desktop">
+                <i class="fas fa-desktop"></i> Desktop
+            </button>
+            <button class="device-btn" data-device="tablet">
+                <i class="fas fa-tablet-alt"></i> Tablet
+            </button>
+            <button class="device-btn" data-device="mobile">
+                <i class="fas fa-mobile-alt"></i> Mobile
+            </button>
+        </div>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 左侧个人介绍卡片 -->
+            <section class="intro-card">
+                <div class="intro-header">
+                    <h1>INTRO</h1>
+                    <div class="intro-year">
+                        <span class="year">2024</span>
+                        <span class="percentage">100%</span>
+                    </div>
+                </div>
+                
+                <div class="intro-content">
+                    <div class="intro-avatar">
+                        <img src="images/avatar.jpg" alt="个人头像" id="avatar-img">
+                        <div class="avatar-frame"></div>
+                    </div>
+                    
+                    <div class="intro-text">
+                        <p class="intro-lead">
+                            <span class="highlight">Aenean ornare velit lacus, ac varius enim lorem ullamcorper dolore.</span>
+                            Proin aliquam facilisis ante interdum. Sed nulla amet lorem feugiat tempus aliquam.
+                        </p>
+                        
+                        <p>
+                            <strong>Lorem ipsum dolor</strong> sit amet, consectetur adipiscing elit. Duis dapibus rutrum facilisis. 
+                            Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.
+                        </p>
+                        
+                        <div class="intro-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">34</span>
+                                <span class="stat-label">项目</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">2024</span>
+                                <span class="stat-label">始于</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">完成度</span>
+                            </div>
+                        </div>
+                        
+                        <div class="intro-actions">
+                            <button class="action-btn primary" onclick="showMoreInfo()">
+                                <i class="fas fa-search"></i> 查看项目
+                            </button>
+                            <button class="action-btn secondary" onclick="contactMe()">
+                                <i class="fas fa-paper-plane"></i> 联系我
+                            </button>
+                            <a href="https://github.com/duxiaoyang-creator" class="action-btn social" target="_blank">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="#" class="action-btn social">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 其他内容区域 -->
+            <section class="content-grid">
+                <!-- 项目展示 -->
+                <div class="content-card">
+                    <h2><i class="fas fa-code"></i> 我的项目</h2>
+                    <div class="project-list">
+                        <div class="project-item">
+                            <h3>个人主页</h3>
+                            <p>使用HTML、CSS和JavaScript构建的响应式个人主页。</p>
+                            <div class="project-tags">
+                                <span class="tag">HTML</span>
+                                <span class="tag">CSS</span>
+                                <span class="tag">JavaScript</span>
+                            </div>
+                        </div>
+                        <div class="project-item">
+                            <h3>学习笔记系统</h3>
+                            <p>用于记录和整理学习笔记的Web应用。</p>
+                            <div class="project-tags">
+                                <span class="tag">Vue.js</span>
+                                <span class="tag">Node.js</span>
+                                <span class="tag">MongoDB</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 技能展示 -->
+                <div class="content-card">
+                    <h2><i class="fas fa-tools"></i> 技能栈</h2>
+                    <div class="skills-list">
+                        <div class="skill-item">
+                            <span class="skill-name">HTML/CSS</span>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 90%"></div>
+                            </div>
+                            <span class="skill-percent">90%</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">JavaScript</span>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 85%"></div>
+                            </div>
+                            <span class="skill-percent">85%</span>
+                        </div>
+                        <div class="skill-item">
+                            <span class="skill-name">React</span>
+                            <div class="skill-bar">
+                                <div class="skill-level" style="width: 80%"></div>
+                            </div>
+                            <span class="skill-percent">80%</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 页脚 -->
+        <footer class="footer">
+            <p>© 2024 个人主页. 基于 <a href="https://html5up.net/dimension" target="_blank">Dimension</a> 模板</p>
+            <p class="footer-info">
+                <span><i class="fas fa-map-marker-alt"></i> 北京, 中国</span>
+                <span><i class="fas fa-envelope"></i> dxyduxiaoyang@outlook.com</span>
+                <span><i class="fas fa-calendar"></i> 2026/3/16</span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- JavaScript文件 -->
+    <script src="script.js"></script>
+</body>
+</html>

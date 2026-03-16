@@ -1,0 +1,181 @@
+// 页面加载完成后执行
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('个人主页已加载！');
+    
+    // 1. 主题切换功能
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    themeToggle.addEventListener('click', function() {
+        document.body.classList.toggle('light-theme');
+        
+        if (document.body.classList.contains('light-theme')) {
+            themeIcon.className = 'fas fa-sun';
+            themeToggle.title = '切换到深色主题';
+        } else {
+            themeIcon.className = 'fas fa-moon';
+            themeToggle.title = '切换到浅色主题';
+        }
+    });
+    
+    // 2. 设备预览切换
+    const deviceButtons = document.querySelectorAll('.device-btn');
+    const mainContent = document.querySelector('.main-content');
+    
+    deviceButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // 移除所有按钮的active类
+            deviceButtons.forEach(btn => btn.classList.remove('active'));
+            // 为当前点击的按钮添加active类
+            this.classList.add('active');
+            
+            // 根据设备类型添加相应类名
+            const device = this.getAttribute('data-device');
+            mainContent.className = 'main-content ' + device;
+            
+            // 添加点击效果
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+        });
+    });
+    
+    // 3. 技能条动画（滚动到可见时触发）
+    function animateSkillBars() {
+        const skillBars = document.querySelectorAll('.skill-level');
+        skillBars.forEach(bar => {
+            const width = bar.style.width;
+            bar.style.width = '0';
+            
+            setTimeout(() => {
+                bar.style.width = width;
+            }, 300);
+        });
+    }
+    
+    // 使用Intersection Observer实现滚动动画
+    const observerOptions = {
+        threshold: 0.2,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animated');
+                if (entry.target.classList.contains('skills-list')) {
+                    animateSkillBars();
+                }
+            }
+        });
+    }, observerOptions);
+    
+    // 观察所有内容卡片
+    document.querySelectorAll('.content-card').forEach(card => {
+        observer.observe(card);
+    });
+    
+    // 4. 模拟"Download CV"按钮功能
+    window.downloadResume = function() {
+        // 这里可以替换为实际的下载链接
+        alert('简历下载功能\n实际使用时，请将链接替换为您的PDF简历地址');
+        
+        // 模拟下载效果
+        const btn = document.querySelector('.download-btn');
+        btn.innerHTML = '<i class="fas fa-check"></i> Downloading...';
+        btn.style.background = 'linear-gradient(135deg, #00b894, #00cec9)';
+        
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-download"></i> Download CV';
+            btn.style.background = 'linear-gradient(135deg, #ff4757, #ff3838)';
+        }, 2000);
+    };
+    
+    // 5. 模拟"查看项目"按钮功能
+    window.showMoreInfo = function() {
+        alert('这里可以展示更多项目信息\n实际使用时，可以添加项目弹窗或跳转到项目页面');
+    };
+    
+    // 6. 模拟"联系我"按钮功能
+    window.contactMe = function() {
+        alert('联系方式：\n邮箱: dxyduxiaoyang@outlook.com\nGitHub: duxiaoyang-creator');
+    };
+    
+    // 7. 初始化技能条动画
+    setTimeout(animateSkillBars, 500);
+    
+    // 8. 更新页脚日期
+    const today = new Date();
+    const dateString = today.getFullYear() + '/' + 
+                      (today.getMonth() + 1).toString().padStart(2, '0') + '/' + 
+                      today.getDate().toString().padStart(2, '0');
+    
+    const dateElement = document.querySelector('.footer-info span:nth-child(3)');
+    if (dateElement) {
+        dateElement.innerHTML = `<i class="fas fa-calendar"></i> ${dateString}`;
+    }
+    
+    // 9. 头像悬停效果
+    const avatarImg = document.getElementById('avatar-img');
+    if (avatarImg) {
+        avatarImg.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+            this.style.filter = 'grayscale(0%) brightness(1.1)';
+        });
+        
+        avatarImg.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+            this.style.filter = 'grayscale(20%)';
+        });
+    }
+});
+
+// 添加浅色主题样式
+const style = document.createElement('style');
+style.textContent = `
+    .light-theme {
+        color: #333;
+        background-color: #f8f9fa;
+    }
+    
+    .light-theme .bg {
+        filter: brightness(1.2);
+    }
+    
+    .light-theme .bg-overlay {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+    }
+    
+    .light-theme .intro-card,
+    .light-theme .content-card {
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .light-theme .nav-btn,
+    .light-theme .device-btn {
+        background: rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+    
+    .light-theme .device-btn.active {
+        background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .light-theme .action-btn.secondary {
+        color: #333;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+    }
+    
+    .light-theme .action-btn.social {
+        background: rgba(0, 0, 0, 0.1);
+        color: #333;
+    }
+    
+    .light-theme .skill-bar {
+        background: rgba(0, 0, 0, 0.1);
+    }
+`;
+document.head.appendChild(style);
