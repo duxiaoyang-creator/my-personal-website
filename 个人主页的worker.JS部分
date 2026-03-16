@@ -1,0 +1,1646 @@
+// worker.js
+addEventListener('fetch', event => {
+  event.respondWith(handleRequest(event.request))
+})
+
+async function handleRequest(request) {
+  const url = new URL(request.url)
+  const path = url.pathname
+  
+  // 如果是根路径，返回 HTML
+  if (path === '/') {
+    return new Response(htmlContent, {
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600',
+        'Vary': 'Accept-Encoding'
+      }
+    })
+  }
+  
+  // API 端点
+  if (path === '/api/visit') {
+    return new Response(JSON.stringify({
+      timestamp: new Date().toISOString(),
+      message: 'Hello from Cloudflare Worker!',
+      visitor: 'Automation Professional Developer'
+    }), {
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
+    })
+  }
+  
+  if (path === '/api/health') {
+    return new Response(JSON.stringify({
+      status: 'healthy',
+      service: 'Personal Homepage',
+      version: '2.0.0',
+      uptime: 'running',
+      timestamp: new Date().toISOString()
+    }), {
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
+  
+  // 404 页面
+  return new Response(notFoundContent, {
+    status: 404,
+    headers: { 'Content-Type': 'text/html; charset=utf-8' }
+  })
+}
+
+const htmlContent = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>杜晓阳 | 自动化专业开发者</title>
+  <meta name="description" content="杜晓阳的个人主页 - 自动化专业开发者，工业控制系统与Web技术融合探索者">
+  <meta name="keywords" content="杜晓阳, 个人主页, 自动化专业, 工业控制, 工业4.0, 开发者, 前端开发, Cloudflare Worker">
+  <meta name="author" content="杜晓阳">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="杜晓阳 | 自动化专业开发者">
+  <meta property="og:description" content="自动化专业，工业控制系统与Web技术融合探索者，致力于工业4.0与智能制造">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://duxiaoyang-hompage.dxyduxiaoyang.workers.dev/">
+  <meta property="og:image" content="https://github.com/duxiaoyang-creator.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="杜晓阳 | 自动化专业开发者">
+  <meta name="twitter:description" content="自动化专业，工业控制系统与Web技术融合探索者">
+  <meta name="twitter:image" content="https://github.com/duxiaoyang-creator.png">
+  
+  <!-- 图标和主题色 -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="msapplication-TileColor" content="#0f172a">
+  
+  <!-- 图标库 -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- 预加载关键资源 -->
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="dns-prefetch" href="https://unpkg.com">
+  <link rel="preconnect" href="https://github.com">
+  <link rel="dns-prefetch" href="https://github.com">
+  
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #60a5fa;
+      --secondary: #8b5cf6;
+      --accent: #10b981;
+      --bg: #0f172a;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: rgba(255, 255, 255, 0.1);
+      --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.3);
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    /* 基础样式重置 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    /* 粒子背景 */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
+    
+    /* 渐变背景层 */
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+      z-index: -1;
+    }
+    
+    /* 加载动画 */
+    .loading {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.5s ease-out;
+    }
+    
+    .loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 3px solid transparent;
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      position: relative;
+    }
+    
+    .spinner:before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      border: 3px solid transparent;
+      border-top-color: var(--secondary);
+      border-radius: 50%;
+      animation: spin 2s linear infinite reverse;
+    }
+    
+    .loading-text {
+      margin-top: 1.5rem;
+      color: var(--text-secondary);
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* 容器 */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+    
+    /* 导航栏 */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 1000;
+      padding: 1rem 0;
+      transition: var(--transition);
+    }
+    
+    .navbar-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .nav-menu {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+    
+    .nav-link {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 0;
+      position: relative;
+      transition: var(--transition);
+    }
+    
+    .nav-link:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gradient);
+      transition: width 0.3s ease;
+    }
+    
+    .nav-link:hover {
+      color: var(--text-primary);
+    }
+    
+    .nav-link:hover:after {
+      width: 100%;
+    }
+    
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.5rem;
+      z-index: 1001;
+    }
+    
+    /* 主内容 */
+    .main-content {
+      padding-top: 6rem;
+      padding-bottom: 4rem;
+    }
+    
+    /* 头部设计 */
+    header {
+      text-align: center;
+      margin-bottom: 4rem;
+      position: relative;
+      padding: 3rem 0;
+    }
+    
+    .header-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent);
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 0 auto 2rem;
+      position: relative;
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+      border: 4px solid rgba(255, 255, 255, 0.1);
+      background: var(--gradient);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    
+    .avatar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.5);
+    }
+    
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+    
+    .avatar-status {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 20px;
+      height: 20px;
+      background: var(--accent);
+      border: 3px solid var(--bg);
+      border-radius: 50%;
+    }
+    
+    h1 {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.025em;
+      background: linear-gradient(to right, var(--text-primary), var(--primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1.2;
+    }
+    
+    .tagline {
+      color: var(--text-secondary);
+      font-size: 1.25rem;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    
+    .typing {
+      display: inline-block;
+      border-right: 3px solid var(--primary);
+      white-space: nowrap;
+      overflow: hidden;
+      animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+      font-size: 1.125rem;
+      min-height: 1.5em;
+    }
+    
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: var(--primary) }
+    }
+    
+    /* 区块标题 */
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+      font-size: 2rem;
+      color: var(--text-primary);
+      position: relative;
+    }
+    
+    .section-title:after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+      margin-left: 1rem;
+    }
+    
+    /* 网格布局 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    /* 卡片设计 */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      transition: var(--transition);
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card:hover {
+      transform: translateY(-10px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow);
+    }
+    
+    .card-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+      height: 60px;
+      background: rgba(59, 130, 246, 0.1);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      color: var(--primary);
+      font-size: 1.5rem;
+    }
+    
+    .card h3 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      color: var(--text-primary);
+    }
+    
+    .card p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    /* 技能标签 */
+    .skills-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+    
+    .skill-tag {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+      padding: 0.75rem 1.5rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+      transition: var(--transition);
+      cursor: default;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .skill-tag:hover {
+      background: rgba(59, 130, 246, 0.2);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.2);
+    }
+    
+    /* 技能进度条 */
+    .skill-progress {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      height: 8px;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+    
+    .skill-progress-bar {
+      height: 100%;
+      background: var(--gradient);
+      border-radius: 4px;
+      transition: width 1.5s ease-out;
+      width: 0;
+    }
+    
+    /* 时间线 */
+    .timeline {
+      position: relative;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .timeline:before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border);
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-left: 3rem;
+      margin-bottom: 3rem;
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: 13px;
+      top: 5px;
+      width: 16px;
+      height: 16px;
+      background: var(--primary);
+      border-radius: 50%;
+      border: 3px solid var(--bg);
+    }
+    
+    .timeline-date {
+      color: var(--accent);
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+    
+    .timeline-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    
+    .timeline-desc {
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    
+    /* 联系方式 */
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin: 4rem 0 3rem;
+    }
+    
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 1rem 2rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+      font-weight: 500;
+    }
+    
+    .contact-item:hover {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.2);
+    }
+    
+    /* 建设中的横幅 */
+    .construction-banner {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      margin: 2rem 0 3rem;
+      border-radius: 12px;
+      animation: pulse 2s ease-in-out infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .construction-banner:before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      z-index: 1;
+      animation: shine 3s infinite;
+    }
+    
+    .construction-banner span {
+      position: relative;
+      z-index: 2;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: translateY(0); box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.3); }
+      50% { transform: translateY(-3px); box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.4); }
+    }
+    
+    @keyframes shine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    /* 页脚 */
+    footer {
+      text-align: center;
+      margin-top: 5rem;
+      padding-top: 3rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    
+    footer p {
+      margin-bottom: 0.5rem;
+    }
+    
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .footer-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+      position: relative;
+      padding: 0.5rem 0;
+    }
+    
+    .footer-links a:after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--gradient);
+      transition: width 0.3s ease;
+    }
+    
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    
+    .footer-links a:hover:after {
+      width: 100%;
+    }
+    
+    .copyright {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    
+    /* 暗色/亮色主题切换 - 修复版本 */
+    .theme-switch {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 50px;
+      height: 50px;
+      background: var(--gradient);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 100;
+      transition: var(--transition);
+      border: none;
+      color: white;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .theme-switch:hover {
+      transform: scale(1.1) rotate(15deg);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* 亮色模式样式 */
+    body.light-mode {
+      --bg: #f8fafc;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --text-primary: #1e293b;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --border: rgba(0, 0, 0, 0.1);
+    }
+    
+    body.light-mode .card {
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    
+    body.light-mode .navbar {
+      background: rgba(248, 250, 252, 0.8);
+    }
+    
+    body.light-mode .bg-overlay {
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.02) 0%, transparent 70%);
+    }
+    
+    body.light-mode .avatar {
+      border: 4px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    body.light-mode .avatar-status {
+      border: 3px solid var(--bg);
+    }
+    
+    body.light-mode .loading {
+      background: var(--bg);
+    }
+    
+    body.light-mode .loading-text {
+      color: var(--text-secondary);
+    }
+    
+    body.light-mode .header-badge {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      html {
+        font-size: 14px;
+      }
+      
+      .container {
+        padding: 0 1rem;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+      }
+      
+      .nav-menu {
+        position: fixed;
+        top: 70px;
+        left: 0;
+        right: 0;
+        background: var(--bg);
+        flex-direction: column;
+        padding: 1rem;
+        border-bottom: 1px solid var(--border);
+        transform: translateY(-100%);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+      }
+      
+      .nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+      }
+      
+      h1 {
+        font-size: 2.5rem;
+      }
+      
+      .avatar {
+        width: 120px;
+        height: 120px;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      
+      .section-title {
+        font-size: 1.75rem;
+      }
+      
+      .contact-links {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      
+      .contact-item {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+      }
+      
+      .footer-links {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 2rem;
+      }
+      
+      .section-title {
+        font-size: 1.5rem;
+      }
+      
+      .tagline {
+        font-size: 1.125rem;
+      }
+      
+      .card {
+        padding: 1.5rem;
+      }
+      
+      .theme-switch {
+        bottom: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+      }
+    }
+    
+    /* 动画类 */
+    .fade-in {
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+    
+    .slide-up {
+      animation: slideUp 0.6s ease-out forwards;
+    }
+    
+    .scale-in {
+      animation: scaleIn 0.6s ease-out forwards;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* 滚动条样式 */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: var(--bg);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 5px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- 粒子背景 -->
+  <div id="particles-js"></div>
+  <div class="bg-overlay"></div>
+  
+  <!-- 加载动画 -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text">正在加载个人主页...</div>
+  </div>
+  
+  <!-- 导航栏 -->
+  <nav class="navbar">
+    <div class="navbar-content">
+      <a href="/" class="logo">
+        <i data-lucide="cpu"></i>
+        <span>杜晓阳</span>
+      </a>
+      
+      <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="菜单">
+        <i data-lucide="menu"></i>
+      </button>
+      
+      <div class="nav-menu" id="navMenu">
+        <a href="#home" class="nav-link">首页</a>
+        <a href="#skills" class="nav-link">技能</a>
+        <a href="#projects" class="nav-link">项目</a>
+        <a href="#about" class="nav-link">背景</a>
+        <a href="#contact" class="nav-link">联系</a>
+      </div>
+    </div>
+  </nav>
+  
+  <!-- 主题切换按钮 -->
+  <button class="theme-switch" id="themeSwitch" aria-label="切换主题">
+    <i data-lucide="sun" id="themeIcon"></i>
+  </button>
+  
+  <div class="container">
+    <main class="main-content">
+      <!-- 首页区域 -->
+      <section id="home">
+        <header>
+          <span class="header-badge">自动化专业开发者</span>
+          <div class="avatar">
+            <img src="https://github.com/duxiaoyang-creator.png" alt="杜晓阳" 
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSI2MCIgY3k9IjYwIiByPSI2MCIgZmlsbD0iIzNiODJmNiIvPjx0ZXh0IHg9IjYwIiB5PSI2NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjM2IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSJ3aGl0ZSI+RHU8L3RleHQ+PC9zdmc+'">
+            <div class="avatar-status"></div>
+          </div>
+          <h1>杜晓阳</h1>
+          <p class="tagline">专注于工业自动化、智能制造与Web技术融合，致力于为工业4.0时代创造智能化解决方案</p>
+          <div class="typing" id="typingText"></div>
+        </header>
+      </section>
+      
+      <!-- 建设中横幅 -->
+      <div class="construction-banner">
+        <i data-lucide="construction"></i>
+        <span>🚧 网站持续完善中，欢迎提出宝贵建议！</span>
+        <i data-lucide="construction"></i>
+      </div>
+      
+      <!-- 专业技能区域 -->
+      <section id="skills" class="section">
+        <h2 class="section-title">
+          <i data-lucide="cpu"></i>
+          专业技能
+        </h2>
+        <div class="skills-wrap">
+          <div class="skill-tag">
+            <i data-lucide="code"></i>
+            PLC编程
+            <div class="tooltip">
+              <div class="tooltip-text">西门子/三菱 PLC编程，梯形图/结构化文本</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="robot"></i>
+            工业机器人
+            <div class="tooltip">
+              <div class="tooltip-text">ABB/KUKA工业机器人编程与集成</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="monitor"></i>
+            SCADA/HMI
+            <div class="tooltip">
+              <div class="tooltip-text">WinCC/InTouch SCADA系统，HMI界面开发</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="network"></i>
+            工业物联网
+            <div class="tooltip">
+              <div class="tooltip-text">MQTT/OPC UA协议，设备数据采集与监控</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="factory"></i>
+            智能制造
+            <div class="tooltip">
+              <div class="tooltip-text">MES系统集成，生产优化与数据分析</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="cloud"></i>
+            Web开发
+            <div class="tooltip">
+              <div class="tooltip-text">React/Vue.js, Node.js, 云原生应用</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="database"></i>
+            数据库
+            <div class="tooltip">
+              <div class="tooltip-text">MySQL/PostgreSQL, 时序数据库</div>
+            </div>
+          </div>
+          <div class="skill-tag">
+            <i data-lucide="git-branch"></i>
+            版本控制
+            <div class="tooltip">
+              <div class="tooltip-text">Git, CI/CD流水线，自动化部署</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-top: 2rem;">
+          <h3>技能发展路径</h3>
+          <p>专注于自动化与信息技术的交叉领域，从底层PLC控制到上层管理系统，构建完整的工业4.0解决方案能力栈。</p>
+          
+          <div style="margin-top: 2rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>工业控制基础</span>
+              <span>90%</span>
+            </div>
+            <div class="skill-progress">
+              <div class="skill-progress-bar" data-width="90"></div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>智能制造系统</span>
+              <span>85%</span>
+            </div>
+            <div class="skill-progress">
+              <div class="skill-progress-bar" data-width="85"></div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+              <span>Web开发技术</span>
+              <span>80%</span>
+            </div>
+            <div class="skill-progress">
+              <div class="skill-progress-bar" data-width="80"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 项目经历区域 -->
+      <section id="projects" class="section">
+        <h2 class="section-title">
+          <i data-lucide="rocket"></i>
+          项目经历
+        </h2>
+        
+        <div class="grid">
+          <div class="card fade-in">
+            <div class="card-icon">
+              <i data-lucide="factory"></i>
+            </div>
+            <h3>智能生产线控制系统</h3>
+            <p>设计并实施基于PLC和SCADA的智能生产线控制系统，实现生产全流程自动化监控与优化。系统集成MES系统接口，实时采集生产数据，提升整体生产效率15%。</p>
+            <div class="card-tags">
+              <span class="skill-tag" style="font-size: 0.8rem;">PLC</span>
+              <span class="skill-tag" style="font-size: 0.8rem;">SCADA</span>
+              <span class="skill-tag" style="font-size: 0.8rem;">MES集成</span>
+            </div>
+          </div>
+          
+          <div class="card fade-in">
+            <div class="card-icon">
+              <i data-lucide="cloud"></i>
+            </div>
+            <h3>工业数据可视化平台</h3>
+            <p>开发基于Web的工业数据可视化平台，支持实时监控设备状态、生产数据分析和异常预警。采用微服务架构，支持高并发访问和数据实时更新。</p>
+            <div class="card-tags">
+              <span class="skill-tag" style="font-size: 0.8rem;">React</span>
+              <span class="skill-tag" style="font-size: 0.8rem;">Node.js</span>
+              <span class="skill-tag" style="font-size: 0.8rem;">WebSocket</span>
+            </div>
+          </div>
+          
+          <div class="card fade-in">
+            <div class="card-icon">
+              <i data-lucide="robot"></i>
+            </div>
+            <h3>机器人集成工作站</h3>
+            <p>设计并实施工业机器人集成工作站，实现自动上下料、精密装配和质量检测。通过优化机器人运动路径和Python脚本控制，将生产效率提升20%。</p>
+            <div class="card-tags">
+              <span class="skill-tag" style="font-size: 0.8rem;">工业机器人</span>
+              <span class="skill-tag" style="font-size: 0.8rem;">Python</span>
+              <span class="skill-tag" style="font-size: 0.8rem;">机器视觉</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      <!-- 专业背景区域 -->
+      <section id="about" class="section">
+        <h2 class="section-title">
+          <i data-lucide="book"></i>
+          专业背景
+        </h2>
+        
+        <div class="card">
+          <div class="card-icon">
+            <i data-lucide="graduation-cap"></i>
+          </div>
+          <h3>自动化工程专业背景</h3>
+          <p>拥有扎实的自动化工程理论基础和丰富的实践经验，专注于工业控制系统、智能制造和工业4.0技术的研究与应用。致力于将传统工业自动化与现代信息技术相结合，开发智能、高效的工业解决方案。</p>
+          
+          <div class="timeline" style="margin-top: 2rem;">
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">2024 - 至今</div>
+              <div class="timeline-title">智能制造系统开发</div>
+              <div class="timeline-desc">专注于工业4.0解决方案，将自动化控制与Web技术深度融合，开发智能工厂管理系统。</div>
+            </div>
+            
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">2022 - 2024</div>
+              <div class="timeline-title">工业控制系统集成</div>
+              <div class="timeline-desc">参与多个工业自动化项目，涵盖PLC编程、SCADA系统开发和设备集成。</div>
+            </div>
+            
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">2018 - 2022</div>
+              <div class="timeline-title">自动化专业学习</div>
+              <div class="timeline-desc">系统学习自动化控制理论、工业机器人技术、过程控制与智能制造等相关知识。</div>
+            </div>
+          </div>
+          
+          <p style="margin-top: 2rem;">当前研究方向：工业物联网平台开发、数字孪生技术应用、边缘计算在工业场景的应用。</p>
+        </div>
+      </section>
+      
+      <!-- 联系区域 -->
+      <section id="contact" class="section">
+        <h2 class="section-title">
+          <i data-lucide="mail"></i>
+          联系方式
+        </h2>
+        
+        <div class="contact-links">
+          <a href="https://github.com/duxiaoyang-creator" target="_blank" class="contact-item" rel="noopener noreferrer">
+            <i data-lucide="github"></i>
+            GitHub
+          </a>
+          <a href="mailto:dxyduxiaoyang@outlook.com" class="contact-item">
+            <i data-lucide="mail"></i>
+            Email
+          </a>
+          <a href="https://dxyduxiaoyang.github.io" target="_blank" class="contact-item" rel="noopener noreferrer">
+            <i data-lucide="globe"></i>
+            技术博客
+          </a>
+        </div>
+        
+        <div class="card" style="text-align: center; margin-top: 2rem;">
+          <h3>合作与交流</h3>
+          <p>如果您有工业自动化、智能制造或Web开发相关的项目合作、技术交流或工作机会，欢迎随时联系我。</p>
+          <p style="margin-top: 1rem; color: var(--accent);">期待与您共同探索工业4.0的未来！</p>
+        </div>
+      </section>
+    </main>
+    
+    <footer>
+      <p>© 2026 杜晓阳 | 基于 Cloudflare Workers 构建</p>
+      <p style="color: var(--accent); font-weight: 500; margin: 1rem 0;">
+        <i data-lucide="construction"></i> 网站持续优化中，您的反馈是我们进步的动力！
+      </p>
+      <div class="footer-links">
+        <a href="https://developers.cloudflare.com/workers/" target="_blank" rel="noopener noreferrer">Cloudflare Workers</a>
+        <a href="https://github.com/duxiaoyang-creator/my-personal-website" target="_blank" rel="noopener noreferrer">查看源码</a>
+        <a href="/api/health" target="_blank" rel="noopener noreferrer">服务状态</a>
+      </div>
+      <div class="copyright">
+        最后更新: 2026年3月16日 | 版本: 0.0.1
+      </div>
+    </footer>
+  </div>
+  
+  <!-- 粒子背景库 -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  
+  <script>
+    // 页面加载完成
+    document.addEventListener('DOMContentLoaded', function() {
+      // 初始化图标
+      lucide.createIcons();
+      
+      // 初始化主题切换功能
+      initThemeSwitcher();
+      
+      // 隐藏加载动画
+      setTimeout(() => {
+        const loading = document.getElementById('loading');
+        loading.classList.add('hidden');
+        setTimeout(() => {
+          loading.style.display = 'none';
+          
+          // 初始化粒子背景
+          if (typeof particlesJS !== 'undefined') {
+            particlesJS('particles-js', {
+              particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#3b82f6" },
+                shape: { type: "circle" },
+                opacity: { value: 0.3, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                  enable: true,
+                  distance: 150,
+                  color: "#3b82f6",
+                  opacity: 0.2,
+                  width: 1
+                },
+                move: {
+                  enable: true,
+                  speed: 2,
+                  direction: "none",
+                  random: false,
+                  straight: false,
+                  out_mode: "out",
+                  bounce: false
+                }
+              },
+              interactivity: {
+                detect_on: "canvas",
+                events: {
+                  onhover: { enable: true, mode: "repulse" },
+                  onclick: { enable: true, mode: "push" }
+                }
+              },
+              retina_detect: true
+            });
+          }
+        }, 500);
+      }, 1000);
+      
+      // 打字机效果
+      const texts = [
+        "探索工业自动化与Web技术的无限可能...",
+        "用代码构建智能制造的解决方案...",
+        "在工业4.0时代创造真正的价值..."
+      ];
+      let textIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      const typingElement = document.getElementById('typingText');
+      
+      function typeWriter() {
+        const currentText = texts[textIndex];
+        
+        if (isDeleting) {
+          // 删除字符
+          typingElement.textContent = currentText.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          // 输入字符
+          typingElement.textContent = currentText.substring(0, charIndex + 1);
+          charIndex++;
+        }
+        
+        if (!isDeleting && charIndex === currentText.length) {
+          // 完成输入，等待后开始删除
+          isDeleting = true;
+          setTimeout(typeWriter, 2000);
+        } else if (isDeleting && charIndex === 0) {
+          // 完成删除，切换到下一段文本
+          isDeleting = false;
+          textIndex = (textIndex + 1) % texts.length;
+          setTimeout(typeWriter, 500);
+        } else {
+          // 继续输入或删除
+          const speed = isDeleting ? 50 : 100;
+          setTimeout(typeWriter, speed);
+        }
+      }
+      
+      // 延迟开始打字效果
+      setTimeout(typeWriter, 1500);
+      
+      // 移动端菜单切换
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const navMenu = document.getElementById('navMenu');
+      
+      mobileMenuBtn.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        const icon = mobileMenuBtn.querySelector('i');
+        if (navMenu.classList.contains('active')) {
+          icon.setAttribute('data-lucide', 'x');
+        } else {
+          icon.setAttribute('data-lucide', 'menu');
+        }
+        lucide.createIcons();
+      });
+      
+      // 导航链接点击时关闭移动端菜单
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          navMenu.classList.remove('active');
+          const icon = mobileMenuBtn.querySelector('i');
+          icon.setAttribute('data-lucide', 'menu');
+          lucide.createIcons();
+        });
+      });
+      
+      // 滚动动画
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+      };
+      
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            
+            // 如果是技能进度条，则动画显示进度
+            if (entry.target.querySelector('.skill-progress-bar')) {
+              const progressBars = entry.target.querySelectorAll('.skill-progress-bar');
+              progressBars.forEach(bar => {
+                const width = bar.getAttribute('data-width') + '%';
+                setTimeout(() => {
+                  bar.style.width = width;
+                }, 300);
+              });
+            }
+          }
+        });
+      }, observerOptions);
+      
+      // 观察所有卡片
+      document.querySelectorAll('.card').forEach(card => {
+        observer.observe(card);
+      });
+      
+      // 平滑滚动
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href');
+          if (targetId === '#') return;
+          
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: 'smooth'
+            });
+          }
+        });
+      });
+      
+      // 头像加载失败处理
+      const avatarImg = document.querySelector('.avatar img');
+      if (avatarImg) {
+        avatarImg.addEventListener('error', function() {
+          this.style.display = 'none';
+          const avatarDiv = document.querySelector('.avatar');
+          const fallbackText = document.createElement('div');
+          fallbackText.textContent = '杜';
+          fallbackText.style.position = 'absolute';
+          fallbackText.style.top = '50%';
+          fallbackText.style.left = '50%';
+          fallbackText.style.transform = 'translate(-50%, -50%)';
+          fallbackText.style.color = 'white';
+          fallbackText.style.fontSize = '3rem';
+          fallbackText.style.fontWeight = 'bold';
+          avatarDiv.appendChild(fallbackText);
+        });
+      }
+      
+      // 控制台欢迎信息
+      console.log('%c⚙️ 欢迎来到杜晓阳的个人主页！', 'color: #3b82f6; font-size: 20px; font-weight: bold;');
+      console.log('%c🔧 自动化专业开发者 | 工业控制系统与Web技术融合', 'color: #94a3b8; font-size: 14px;');
+      console.log('%c📧 联系我: dxyduxiaoyang@outlook.com', 'color: #94a3b8; font-size: 14px;');
+      console.log('%c🌐 GitHub: https://github.com/duxiaoyang-creator', 'color: #94a3b8; font-size: 14px;');
+      
+      // 页面性能监控
+      window.addEventListener('pageshow', (event) => {
+        if (event.persisted) {
+          console.log('页面从缓存加载');
+        }
+      });
+    });
+    
+    // 主题切换功能
+    function initThemeSwitcher() {
+      const themeSwitch = document.getElementById('themeSwitch');
+      const themeIcon = document.getElementById('themeIcon');
+      
+      if (!themeSwitch || !themeIcon) {
+        console.error('主题切换元素未找到');
+        return;
+      }
+      
+      // 检查本地存储的主题偏好
+      const savedTheme = localStorage.getItem('theme');
+      
+      if (savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        themeIcon.setAttribute('data-lucide', 'moon');
+        themeSwitch.title = '切换到深色模式';
+      } else {
+        document.body.classList.remove('light-mode');
+        themeIcon.setAttribute('data-lucide', 'sun');
+        themeSwitch.title = '切换到浅色模式';
+      }
+      
+      // 重新渲染图标
+      lucide.createIcons();
+      
+      // 主题切换事件
+      themeSwitch.addEventListener('click', () => {
+        const isLightMode = document.body.classList.contains('light-mode');
+        
+        if (isLightMode) {
+          // 切换到深色模式
+          document.body.classList.remove('light-mode');
+          localStorage.setItem('theme', 'dark');
+          themeIcon.setAttribute('data-lucide', 'sun');
+          themeSwitch.title = '切换到浅色模式';
+        } else {
+          // 切换到浅色模式
+          document.body.classList.add('light-mode');
+          localStorage.setItem('theme', 'light');
+          themeIcon.setAttribute('data-lucide', 'moon');
+          themeSwitch.title = '切换到深色模式';
+        }
+        
+        // 重新渲染图标
+        lucide.createIcons();
+        
+        // 添加切换动画效果
+        themeSwitch.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+          themeSwitch.style.transform = '';
+        }, 200);
+      });
+      
+      console.log('主题切换功能已初始化');
+    }
+    
+    // 页面可见性变化
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        console.log('页面隐藏');
+      } else {
+        console.log('页面可见');
+      }
+    });
+    
+    // 错误处理
+    window.addEventListener('error', (event) => {
+      console.error('页面发生错误:', event.error);
+    });
+  </script>
+</body>
+</html>
+`
+
+// 404 页面内容
+const notFoundContent = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - 页面未找到</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f172a;
+      color: white;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background-image: 
+        radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+    }
+    
+    .container {
+      max-width: 600px;
+    }
+    
+    h1 {
+      font-size: 8rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #f8fafc;
+    }
+    
+    p {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      font-size: 1.125rem;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    a {
+      color: white;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      transition: all 0.3s;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    a.primary {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    }
+    
+    a.secondary {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(59, 130, 246, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+      h1 { font-size: 6rem; }
+      h2 { font-size: 1.5rem; }
+      .action-buttons { flex-direction: column; }
+      a { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>404</h1>
+    <h2>哎呀，页面走丢了！</h2>
+    <p>您访问的页面可能已被移动、删除或暂时不可用。别担心，让我们带您回到正轨。</p>
+    <div class="action-buttons">
+      <a href="/" class="primary">
+        <i data-lucide="home"></i>
+        返回首页
+      </a>
+      <a href="mailto:dxyduxiaoyang@outlook.com" class="secondary">
+        <i data-lucide="mail"></i>
+        联系我
+      </a>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>
+`
+
+// 添加一个简单的健康检查端点
+addEventListener('scheduled', event => {
+  event.waitUntil(handleScheduled())
+})
+
+async function handleScheduled() {
+  // 可以在这里添加定时任务，比如数据统计、缓存清理等
+  const timestamp = new Date().toISOString();
+  console.log('定时任务执行于:', timestamp);
+  
+  // 这里可以添加更多逻辑，比如发送统计信息等
+  return new Response(JSON.stringify({
+    status: 'ok',
+    message: 'Scheduled task executed',
+    timestamp: timestamp
+  }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
