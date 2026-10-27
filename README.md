@@ -1,24 +1,19 @@
-# 个人主页项目
+﻿# DXY · Anime Developer Portfolio
 
-基于 Dimension 模板的现代化个人主页，使用纯 HTML、CSS 和 JavaScript 构建。
+一个带有二次元视觉气质的个人主页，使用纯 HTML、CSS 与 JavaScript 构建。
 
-## 特点
+- 响应式布局，适配桌面与移动端
+- 深色 / 浅色主题切换
+- 滚动入场动画与数字计数动效
+- 连接 GitHub 项目与邮箱
+- 使用 `images/avatar.jpg` 与 `images/background.jpg` 作为本地素材
 
-- 🎨 现代化暗色主题设计
-- 📱 响应式布局，适配所有设备
-- 🌓 亮色/暗色主题切换
-- 📊 动态技能展示
-- 📁 项目展示区域
-- 📄 模拟简历下载功能
+## 本地预览
 
-## 使用方法
+直接打开 `index.html`，或在当前目录运行：
 
-1. 克隆项目到本地
-2. 用浏览器打开 `index.html` 查看效果
-3. 修改内容：
-   - 替换 `images/` 文件夹中的图片
-   - 修改 `index.html` 中的个人信息
-   - 调整 `style.css` 中的样式
-   - 扩展 `script.js` 中的功能
+```bash
+python -m http.server 8000
+```
 
-## 文件结构
+然后访问 <http://localhost:8000>。
